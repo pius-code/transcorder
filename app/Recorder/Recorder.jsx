@@ -187,11 +187,8 @@ const Recorder = () => {
         const wavBlob = await convertToWav(webmBlob);
         const url = URL.createObjectURL(wavBlob);
         const link = document.createElement("a");
-        console.log("src should be below this ");
-        console.log(wavBlob.type);
-        console.log(link);
-        setSrc(url);
-        console.log("linkkkssksjshsh", link.href);
+
+        setSrc((prevSrc) => [...prevSrc, url]);
         link.href = url;
         link.download = `recording_${new Date().toISOString()}.wav`;
         link.click();
@@ -208,7 +205,7 @@ const Recorder = () => {
   };
 
   useEffect(() => {
-    if (src && audioRef.current) {
+    if (src) {
       console.log(src);
     }
   }, [src]);
@@ -299,12 +296,6 @@ const Recorder = () => {
           xstyles={"bg-gray-200 text-black hover:bg-gray-400"}
         />
       </div>
-      {src && (
-        <audio ref={audioRef} key={src} controls>
-          <source src={src} type="audio/wav" />
-          helloooo
-        </audio>
-      )}
     </div>
   );
 };

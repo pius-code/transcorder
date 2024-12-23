@@ -4,7 +4,7 @@ import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import "../globals.css";
 import { locationContext } from "../Components/RecordedLoc";
 
-const Player = () => {
+const Player = (props) => {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(100);
@@ -41,7 +41,7 @@ const Player = () => {
     <div className="bg-[#3d3f40b3] w-full h-48 rounded-xl p-6 flex flex-col justify-between">
       <audio
         ref={audioRef}
-        src={src}
+        src={props.yourSrc || "counts.wav"}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
       />
