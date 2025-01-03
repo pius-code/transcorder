@@ -1,5 +1,4 @@
 import React, { createContext, useState } from "react";
-import "../styles/globals.css";
 
 export const locationContext = createContext();
 
