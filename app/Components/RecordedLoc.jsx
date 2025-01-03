@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-
+import "../globals.css";
 export const locationContext = createContext();
 
 const RecordedLoc = ({ children }) => {

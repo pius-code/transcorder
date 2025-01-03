@@ -2,6 +2,7 @@ import React, { useState, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause, faDownload } from "@fortawesome/free-solid-svg-icons";
 import { locationContext } from "../Components/RecordedLoc";
+import "../globals.css";
 
 const Player = (props) => {
   const [playing, setPlaying] = useState(false);

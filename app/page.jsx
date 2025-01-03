@@ -6,6 +6,7 @@ import Recorder from "./Recorder/Recorder";
 import Player from "./Player/Player";
 import RecordedLoc from "./Components/RecordedLoc";
 import { locationContext } from "./Components/RecordedLoc";
+import "./globals.css";
 
 const Page = () => {
   const [show, setShow] = useState(false);
