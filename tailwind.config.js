@@ -1,17 +1,13 @@
-/** @type {import('tailwindcss').Config} */
+// tailwind.config.js
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,jsx,ts,tsx}", // For the app directory
+    "./pages/**/*.{js,jsx,ts,tsx}", // For the pages directory (if you have one)
+    "./components/**/*.{js,jsx,ts,tsx}", // For the components directory
+    "./styles/**/*.{css}", // For your global styles (if applicable)
   ],
   theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-    },
+    extend: {},
   },
   plugins: [],
 };
