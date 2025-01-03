@@ -7,12 +7,7 @@ module.exports = {
     "./styles/**/*.{css}", // For your global styles (if applicable)
   ],
   theme: {
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-    },
+    extend: {},
   },
   plugins: [],
 };
