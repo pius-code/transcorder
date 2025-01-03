@@ -261,7 +261,7 @@ const Recorder = () => {
             size="2x"
             style={{ color: "white", margin: "1px" }}
             onClick={startRecording}
-            className="bg-[#3e414300] rounded-full w-52 h-52 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10  border-red-300"
+            className="bg-[#3e414300] rounded-full h-28 w-28 lg:w-52 lg:h-52 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10  border-red-300"
           />
         ) : (
           <FontAwesomeIcon
@@ -269,7 +269,7 @@ const Recorder = () => {
             size="5x"
             style={{ color: "white", margin: "10px" }}
             onClick={pauseRecording}
-            className="bg-[#dc484d7f] rounded-full w-52 h-52 border-2 border-transparent focus:border-[#45505e] m-6 flex justify-center items-center p-10"
+            className="bg-[#dc484d7f] rounded-full  h-28 w-28 lg:w-52 lg:h-52 border-2 border-transparent focus:border-[#45505e] m-6 flex justify-center items-center p-10"
           />
         )}
       </button>
