@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faPause } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Components/Button";
 import { locationContext } from "../Components/RecordedLoc";
+import "../styles/globals.css";
 
 const Recorder = () => {
   const audioRef = useRef(null);
