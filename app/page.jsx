@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import Recorder from "./Recorder/Recorder";
-import Player from "./Player/Player";
+import Player from "./Play/Player";
 import RecordedLoc from "./Components/RecordedLoc";
 import { locationContext } from "./Components/RecordedLoc";
 import "./globals.css";
