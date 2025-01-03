@@ -1,13 +1,17 @@
 // tailwind.config.js
 module.exports = {
   content: [
-    "./app/**/*.{js,jsx,ts,tsx}", // For the app directory
-    "./pages/**/*.{js,jsx,ts,tsx}", // For the pages directory (if you have one)
-    "./components/**/*.{js,jsx,ts,tsx}", // For the components directory
-    "./styles/**/*.{css}", // For your global styles (if applicable)
+    "./app/**/*.{js,ts,jsx,tsx,mdx}", // Include the app directory
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}", // Include the pages directory (if you're using it)
+    "./components/**/*.{js,ts,jsx,tsx,mdx}", // Include components
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+    },
   },
   plugins: [],
 };
