@@ -1,7 +1,7 @@
 import React from "react";
 
 const transcription = () => {
-  return <div>Transcription</div>;
+  return <div>Transcriwerwerwrwrwerweption</div>;
 };
 
 export default transcription;
