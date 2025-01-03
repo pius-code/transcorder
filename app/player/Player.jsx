@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faPause, faDownload } from "@fortawesome/free-solid-svg-icons";
 import "../globals.css";
 import { locationContext } from "../Components/RecordedLoc";
 
@@ -11,9 +11,21 @@ const Player = (props) => {
   const audioRef = useRef(null);
   const { src } = useContext(locationContext);
 
+  const downloadFile = () => {
+    console.log("i was clicked to download");
+    const link = document.createElement("a");
+    link.href = audioRef.current.src;
+    link.download = `voice${props.name}.mp3`;
+    link.click();
+  };
+
   const handlePlayPause = () => {
-    audioRef.current.play();
-    console.log(src);
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setPlaying(!playing);
   };
 
   const handleSliderChange = (e) => {
@@ -30,6 +42,11 @@ const Player = (props) => {
     setDuration(audioRef.current.duration);
   };
 
+  const handleEnded = () => {
+    setPlaying(false);
+    setCurrentTime(0); // Reset slider to the start when the audio ends
+  };
+
   const calculateTrackBackground = () => {
     const progressPercentage = (currentTime / duration) * 100 || 0;
     return `linear-gradient(to right, #e7d5d5 ${progressPercentage}%, #756d6d ${
@@ -44,11 +61,17 @@ const Player = (props) => {
         src={props.yourSrc || "counts.wav"}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={handleEnded}
       />
-      <div>
-        <h4 className="font-bold text-2xl">VoiceName</h4>
+      <div className="flex justify-between items-center">
+        <h4 className="font-bold text-2xl">{`Voice${props.name}`}</h4>
+        <button onClick={downloadFile}>
+          <FontAwesomeIcon icon={faDownload} size="2x" />
+        </button>
       </div>
-      <div className="playPause flex justify-center ">
+      <div className="playPause flex justify-center">
         <button className="play" onClick={handlePlayPause}>
           <FontAwesomeIcon icon={playing ? faPause : faPlay} size="3x" />
         </button>

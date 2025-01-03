@@ -35,16 +35,31 @@ const Page = () => {
           !show ? "hidden" : "flex w-full p-3 flex-col "
         }`}
       >
-        <button className="h-5 mb-6 mt-2 mx-2 lg:hidden flex" onClick={goBack}>
+        <button
+          className="h-14 mb-6 mt-2 mx-2 lg:hidden flex bg-[#2722229c] w-12 rounded-full
+          justify-center items-center"
+          onClick={goBack}
+        >
           <FontAwesomeIcon icon={faChevronLeft} size="2x" />
         </button>
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full h-full overflow-y-auto">
           {Array.isArray(src) && src.length > 0 ? (
-            src.map((current, index) => {
-              return <Player yourSrc={current} key={index} />;
-            })
+            src
+              .slice()
+              .reverse()
+              .map((current, index) => {
+                return (
+                  <Player
+                    yourSrc={current}
+                    key={index}
+                    name={`00${src.length - index}`}
+                  />
+                );
+              })
           ) : (
-            <p>No recording available</p>
+            <p className="flex justify-center items-center h-[75%] font-semibold text-2xl">
+              No recorded files
+            </p>
           )}
         </div>
       </div>

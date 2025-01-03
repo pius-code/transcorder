@@ -186,12 +186,7 @@ const Recorder = () => {
 
         const wavBlob = await convertToWav(webmBlob);
         const url = URL.createObjectURL(wavBlob);
-        const link = document.createElement("a");
-
         setSrc((prevSrc) => [...prevSrc, url]);
-        link.href = url;
-        link.download = `recording_${new Date().toISOString()}.wav`;
-        link.click();
         setStopped(true);
         setIsRecording(false);
         setIsPaused(true);
@@ -203,12 +198,6 @@ const Recorder = () => {
       }
     }, 100);
   };
-
-  useEffect(() => {
-    if (src) {
-      console.log(src);
-    }
-  }, [src]);
 
   const deleter = () => {
     if (
@@ -255,31 +244,31 @@ const Recorder = () => {
 
   const pauseRecording = () => {
     if (!mediaRecorderRef.current) return;
-
     setIsPaused(true);
     setIsRecording(false);
     clearInterval(timeRef.current);
     timeRef.current = null;
-
     mediaRecorderRef.current.pause();
   };
 
   return (
-    <div className="flex flex-col justify-center items-center m-8 w-60">
-      <button className="bg-[#3e4143] rounded-full w-64 h-64 hover:bg-[#37393a] border-2 border-transparent focus:border-[#2e3335] m-6">
+    <div className="flex flex-col justify-center items-center m-14 w-60">
+      <button className="flex justify-center items-center h-64">
         {!isRecording ? (
           <FontAwesomeIcon
             icon={faMicrophone}
-            size="10x"
+            size="8x"
             style={{ color: "white", margin: "10px" }}
             onClick={startRecording}
+            className="bg-[#3e41430b] rounded-full w-60 h-64 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10  border-purple-300"
           />
         ) : (
           <FontAwesomeIcon
             icon={faPause}
-            size="10x"
+            size="8x"
             style={{ color: "white", margin: "10px" }}
             onClick={pauseRecording}
+            className="bg-[#de4b5025] rounded-full w-60 h-64 border-2 border-transparent focus:border-[#45505e] m-6 flex justify-center items-center p-10"
           />
         )}
       </button>
