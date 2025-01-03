@@ -58,7 +58,7 @@ const Page = () => {
               })
           ) : (
             <p className="flex justify-center items-center h-[75%] font-semibold text-2xl">
-              No recorded files
+              No recorded file
             </p>
           )}
         </div>
