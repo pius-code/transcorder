@@ -66,7 +66,7 @@ const Page = () => {
       </div>
 
       {recApp && (
-        <div className="recorderApp w-full h-full flex flex-col justify-center items-center bg-[#2e2b2b6d] rounded-xl p-3">
+        <div className="recorderApp w-full h-full flex flex-col justify-center items-center bg-[#2e2b2b00] rounded-xl p-3">
           <div className="tools flex w-full flex-row justify-between px-3 ">
             <button onClick={showRecFiles} className="lg:hidden">
               <FontAwesomeIcon icon={faBars} size="2x" />

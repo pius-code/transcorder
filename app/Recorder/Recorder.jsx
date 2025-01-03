@@ -253,28 +253,28 @@ const Recorder = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center m-14 w-60">
-      <button className="flex justify-center items-center h-64">
+    <div className="flex flex-col justify-center items-center m-14 w-60 h-90">
+      <button className="flex justify-center items-center h-48 m-5 ">
         {!isRecording ? (
           <FontAwesomeIcon
             icon={faMicrophone}
-            size="8x"
-            style={{ color: "white", margin: "10px" }}
+            size="2x"
+            style={{ color: "white", margin: "1px" }}
             onClick={startRecording}
-            className="bg-[#3e41430b] rounded-full w-60 h-64 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10  border-purple-300"
+            className="bg-[#3e414300] rounded-full w-52 h-52 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10  border-red-300"
           />
         ) : (
           <FontAwesomeIcon
             icon={faPause}
-            size="8x"
+            size="5x"
             style={{ color: "white", margin: "10px" }}
             onClick={pauseRecording}
-            className="bg-[#de4b5025] rounded-full w-60 h-64 border-2 border-transparent focus:border-[#45505e] m-6 flex justify-center items-center p-10"
+            className="bg-[#dc484d7f] rounded-full w-52 h-52 border-2 border-transparent focus:border-[#45505e] m-6 flex justify-center items-center p-10"
           />
         )}
       </button>
 
-      <div className="bg-[#7b7d7f25] w-44 h-16 text-4xl font-semibold flex justify-center items-center rounded-full">
+      <div className="bg-[#6d86a0c2] w-44 h-16 text-4xl font-semibold flex justify-center items-center rounded-full mt-14">
         {timer}
       </div>
 

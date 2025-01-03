@@ -55,7 +55,7 @@ const Player = (props) => {
   };
 
   return (
-    <div className="bg-[#3d3f40b3] w-full h-48 rounded-xl p-6 flex flex-col justify-between">
+    <div className="bg-[#302f30f9] w-full h-48 rounded-xl p-6 flex flex-col justify-between">
       <audio
         ref={audioRef}
         src={props.yourSrc || "counts.wav"}
