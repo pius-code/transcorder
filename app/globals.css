@@ -2,58 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --thumb-color: #00000000; /* Custom thumb color */
-}
-
-@media (prefers-color-scheme: dark) {
+/* Put all custom styles inside a @layer components block */
+@layer components {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
+    --thumb-color: #00000000;
   }
-}
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0a0a0a;
+      --foreground: #ededed;
+    }
+  }
 
-.slider-container {
-  width: 100%;
-  position: relative;
-  height: 15px;
-}
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+  }
 
-.slider {
-  @apply w-full h-7 bg-transparent rounded-lg outline-none relative z-10 cursor-pointer;
-  -webkit-appearance: none;
-  appearance: none;
-}
+  .slider-container {
+    width: 100%;
+    position: relative;
+    height: 15px;
+  }
 
-.slider:hover {
-  @apply transition-all scale-[1.01];
-}
+  .slider {
+    @apply w-full h-7 bg-transparent rounded-lg outline-none relative z-10 cursor-pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
 
-/* WebKit browsers (Chrome, Safari) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  @apply w-4 h-4 bg-[var(--thumb-color)] rounded-full cursor-pointer;
-  transition: background 0.15s;
-}
+  .slider:hover {
+    @apply transition-all scale-[1.01];
+  }
 
-/* Firefox */
-.slider::-moz-range-thumb {
-  @apply w-4 h-4 bg-[var(--thumb-color)] rounded-full cursor-pointer;
-  border: none;
-  transition: background 0.15s;
-}
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply w-4 h-4 bg-[var(--thumb-color)] rounded-full cursor-pointer;
+    transition: background 0.15s;
+  }
 
-/* IE/Edge */
-.slider::-ms-thumb {
-  @apply w-4 h-4 bg-[var(--thumb-color)] rounded-full cursor-pointer;
-  transition: background 0.15s;
+  .slider::-moz-range-thumb {
+    @apply w-4 h-4 bg-[var(--thumb-color)] rounded-full cursor-pointer;
+    border: none;
+    transition: background 0.15s;
+  }
+
+  .slider::-ms-thumb {
+    @apply w-4 h-4 bg-[var(--thumb-color)] rounded-full cursor-pointer;
+    transition: background 0.15s;
+  }
 }
