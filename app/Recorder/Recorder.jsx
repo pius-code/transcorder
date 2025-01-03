@@ -261,7 +261,7 @@ const Recorder = () => {
             size="2x"
             style={{ color: "white", margin: "1px" }}
             onClick={startRecording}
-            className="bg-[#3e414300] rounded-full h-28 w-28 lg:w-52 lg:h-52 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10  border-red-300"
+            className="bg-[#3e414300] rounded-full h-28 w-28 lg:w-52 lg:h-52 border-2  focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252525] p-10 border-none"
           />
         ) : (
           <FontAwesomeIcon
