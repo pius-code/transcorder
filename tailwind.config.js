@@ -1,5 +1,6 @@
 // tailwind.config.js
 module.exports = {
+  darkMode: "media",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}", // Include the pages directory
     "./app/**/*.{js,ts,jsx,tsx}", // Include the app directory

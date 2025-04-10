@@ -9,14 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/background-runner": "^2.1.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0",
+    "@capacitor/status-bar": "^6.0.2",
+    "@capgo/capacitor-navigation-bar": "^6.1.75",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "capacitor-voice-recorder": "^6.0.3",
+    "lamejs": "^1.2.1",
     "next": "14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",

@@ -3,130 +3,34 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faPause } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Components/Button";
 import { locationContext } from "../Components/RecordedLoc";
+import { VoiceRecorder } from "capacitor-voice-recorder";
 import "../globals.css";
 
 const Recorder = () => {
-  const audioRef = useRef(null);
   const [timer, setTimer] = useState("00:00:00");
   const [isRecording, setIsRecording] = useState(false);
-  const [isPaused, setIsPaused] = useState(true);
-  const [stopped, setStopped] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
   const timeRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const chunksRef = useRef([]);
-  const streamRef = useRef(null);
   const { src, setSrc } = useContext(locationContext);
-
-  // Convert blob to WAV format
-  const convertToWav = async (audioBlob) => {
-    const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)();
-    const arrayBuffer = await audioBlob.arrayBuffer();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    // Create WAV file
-    const numberOfChannels = audioBuffer.numberOfChannels;
-    const length = audioBuffer.length * numberOfChannels * 2;
-    const buffer = new ArrayBuffer(44 + length);
-    const view = new DataView(buffer);
-
-    // Write WAV header
-    const writeString = (view, offset, string) => {
-      for (let i = 0; i < string.length; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
-      }
-    };
-
-    writeString(view, 0, "RIFF");
-    view.setUint32(4, 36 + length, true);
-    writeString(view, 8, "WAVE");
-    writeString(view, 12, "fmt ");
-    view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true);
-    view.setUint16(22, numberOfChannels, true);
-    view.setUint32(24, audioBuffer.sampleRate, true);
-    view.setUint32(28, audioBuffer.sampleRate * numberOfChannels * 2, true);
-    view.setUint16(32, numberOfChannels * 2, true);
-    view.setUint16(34, 16, true);
-    writeString(view, 36, "data");
-    view.setUint32(40, length, true);
-
-    // Write audio data
-    const offset = 44;
-    const channelData = [];
-    for (let i = 0; i < numberOfChannels; i++) {
-      channelData.push(audioBuffer.getChannelData(i));
-    }
-
-    let index = 0;
-    while (index < audioBuffer.length) {
-      for (let i = 0; i < numberOfChannels; i++) {
-        const sample = channelData[i][index] * 0x7fff;
-        view.setInt16(
-          offset + (index * numberOfChannels + i) * 2,
-          sample < 0
-            ? Math.max(-0x8000, Math.floor(sample))
-            : Math.min(0x7fff, Math.ceil(sample)),
-          true
-        );
-      }
-      index++;
-    }
-
-    return new Blob([buffer], { type: "audio/wav" });
-  };
 
   useEffect(() => {
     const initializeRecorder = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            sampleRate: 44100,
-          },
-        });
-
-        streamRef.current = stream;
-
-        const mediaRecorder = new MediaRecorder(stream, {
-          mimeType: "audio/webm;codecs=opus",
-          audioBitsPerSecond: 128000,
-        });
-
-        mediaRecorderRef.current = mediaRecorder;
-
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            chunksRef.current.push(event.data);
-          }
-        };
-
-        mediaRecorder.onstart = () => {
-          chunksRef.current = [];
-        };
-
-        mediaRecorder.onerror = (error) => {
-          console.error("MediaRecorder error:", error);
-          alert(`Recording error: ${error.message}`);
-        };
+        await VoiceRecorder.requestAudioRecordingPermission();
+        const result = await VoiceRecorder.canDeviceVoiceRecord();
+        if (!result.value) {
+          alert("Device does not support audio recording.");
+        }
       } catch (error) {
         console.error("Initialization error:", error);
-        alert(
-          `Microphone access error: ${error.message}. Please ensure you've granted microphone permissions in your browser settings.`
-        );
+        alert("Microphone access error: " + error.message);
       }
     };
 
     initializeRecorder();
-
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
-    };
   }, []);
 
-  function startTimer() {
+  const startTimer = () => {
     if (timeRef.current) return;
     const parts = timer.split(":");
     let hours = parseInt(parts[0], 10);
@@ -142,139 +46,163 @@ const Recorder = () => {
         minutes = 0;
         hours++;
       }
-
-      const newTimer =
-        String(hours).padStart(2, "0") +
-        ":" +
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(seconds).padStart(2, "0");
-      setTimer(newTimer);
+      setTimer(
+        `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`
+      );
     }, 1000);
-  }
+  };
 
-  function resetTimer() {
+  const resetTimer = () => {
     clearInterval(timeRef.current);
     timeRef.current = null;
     setTimer("00:00:00");
-  }
-
-  const save = () => {
-    if (!mediaRecorderRef.current) {
-      alert("Recorder not initialized");
-      return;
-    }
-
-    if (mediaRecorderRef.current.state !== "inactive") {
-      mediaRecorderRef.current.stop();
-    }
-
-    setTimeout(async () => {
-      if (chunksRef.current.length === 0) {
-        alert("No audio recorded. Please try again.");
-        return;
-      }
-
-      try {
-        const webmBlob = new Blob(chunksRef.current, {
-          type: "audio/webm;codecs=opus",
-        });
-
-        if (webmBlob.size === 0) {
-          alert("No audio data captured.");
-          return;
-        }
-
-        const wavBlob = await convertToWav(webmBlob);
-        const url = URL.createObjectURL(wavBlob);
-        setSrc((prevSrc) => [...prevSrc, url]);
-        setStopped(true);
-        setIsRecording(false);
-        setIsPaused(true);
-        resetTimer();
-        chunksRef.current = [];
-      } catch (error) {
-        console.error("Error converting audio:", error);
-        alert("Error saving audio. Please try again.");
-      }
-    }, 100);
   };
 
-  const deleter = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !== "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-    }
-
-    setStopped(true);
-    setIsRecording(false);
-    setIsPaused(true);
-    resetTimer();
-    chunksRef.current = [];
-  };
-
-  const startRecording = () => {
-    if (!mediaRecorderRef.current) {
-      alert(
-        "Recorder not initialized. Please ensure microphone permissions are granted and reload the page."
-      );
-      return;
-    }
-
-    startTimer();
-    setIsRecording(true);
-    setIsPaused(false);
-
+  const convertToWav = async (base64String) => {
     try {
-      if (stopped) {
-        chunksRef.current = [];
-        mediaRecorderRef.current.start(100);
-        setStopped(false);
+      const binaryString = atob(base64String);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+      const audioBuffer = await audioContext.decodeAudioData(bytes.buffer);
+
+      const channelData = audioBuffer.getChannelData(0);
+      const wavData = createWavFile(channelData, audioBuffer.sampleRate);
+
+      const blob = new Blob([wavData], { type: "audio/wav" });
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error("WAV conversion error:", error);
+      throw error;
+    }
+  };
+
+  const createWavFile = (samples, sampleRate) => {
+    const buffer = new ArrayBuffer(44 + samples.length * 2);
+    const view = new DataView(buffer);
+
+    // WAV header
+    writeString(view, 0, "RIFF");
+    view.setUint32(4, 36 + samples.length * 2, true);
+    writeString(view, 8, "WAVE");
+    writeString(view, 12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true); // Mono channel
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); // Byte rate
+    view.setUint16(32, 2, true); // Block align
+    view.setUint16(34, 16, true); // Bits per sample
+    writeString(view, 36, "data");
+    view.setUint32(40, samples.length * 2, true);
+
+    // PCM samples
+    let offset = 44;
+    for (let i = 0; i < samples.length; i++, offset += 2) {
+      const s = Math.max(-1, Math.min(1, samples[i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+    }
+
+    return buffer;
+  };
+
+  const writeString = (view, offset, string) => {
+    for (let i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
+  };
+
+  const save = async () => {
+    try {
+      const recording = await VoiceRecorder.stopRecording();
+      const { value } = recording;
+
+      const wavUrl = await convertToWav(value.recordDataBase64);
+      setSrc((prevSrc) => [...prevSrc, wavUrl]);
+      resetStates();
+    } catch (error) {
+      console.error("Error saving:", error);
+      alert("Error saving audio as WAV");
+    }
+  };
+
+  const resetStates = () => {
+    setIsRecording(false);
+    setIsPaused(false);
+    resetTimer();
+  };
+
+  const startRecording = async () => {
+    try {
+      if (isPaused) {
+        // Resume recording if paused
+        await VoiceRecorder.resumeRecording();
+        startTimer();
+        setIsPaused(false);
+        setIsRecording(true);
       } else {
-        mediaRecorderRef.current.resume();
+        // Start a new recording
+        await VoiceRecorder.startRecording();
+        startTimer();
+        setIsRecording(true);
       }
     } catch (error) {
-      console.error("Recording error:", error);
-      alert(
-        `Failed to start recording: ${error.message}. Please check microphone permissions.`
-      );
+      console.error("Error starting/resuming recording:", error);
+      alert("Error starting/resuming recording");
     }
   };
 
-  const pauseRecording = () => {
-    if (!mediaRecorderRef.current) return;
-    setIsPaused(true);
-    setIsRecording(false);
-    clearInterval(timeRef.current);
-    timeRef.current = null;
-    mediaRecorderRef.current.pause();
+  const pauseRecording = async () => {
+    try {
+      await VoiceRecorder.pauseRecording();
+      setIsPaused(true);
+      setIsRecording(false);
+      clearInterval(timeRef.current);
+      timeRef.current = null;
+    } catch (error) {
+      console.error("Error pausing recording:", error);
+      alert("Error pausing recording");
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      await VoiceRecorder.stopRecording();
+      resetStates();
+    } catch (error) {
+      console.error("Error stopping recording:", error);
+      alert("Error stopping recording");
+    }
   };
 
   return (
     <div className="flex flex-col justify-center items-center m-14 w-60 h-90">
-      <button className="flex justify-center items-center h-48 m-5 ">
+      <button className="flex justify-center items-center h-48 m-5">
         {!isRecording ? (
           <FontAwesomeIcon
             icon={faMicrophone}
-            size="2x"
-            style={{ color: "white", margin: "1px" }}
+            size="5x"
             onClick={startRecording}
-            className="bg-[#3e414300] rounded-full h-28 w-28 lg:w-52 lg:h-52 border-2 border-red-400 focus:border-[#692bb5] m-6 flex justify-center items-center hover:bg-[#6c252597] p-10 "
+            className="bg-red-200 rounded-full h-28 w-28 border-2 border-red-400 dark:bg-[#3b1919] dark:border-red-500 hover:bg-red-300 dark:hover:dark:bg-[#361717] p-10"
           />
         ) : (
           <FontAwesomeIcon
             icon={faPause}
             size="5x"
-            style={{ color: "white", margin: "10px" }}
             onClick={pauseRecording}
-            className="bg-[#dc484d7f] rounded-full  h-28 w-28 lg:w-52 lg:h-52 border-2 border-transparent focus:border-[#45505e] m-6 flex justify-center items-center p-10"
+            className="bg-[#d6618c7f] hover:bg-[#b651767f] dark:bg-[#8f596f] dark:hover:bg-[#814a5f] rounded-full h-28 w-28  p-10"
           />
         )}
       </button>
 
-      <div className="bg-[#6d86a0c2] w-44 h-16 text-4xl font-semibold flex justify-center items-center rounded-full mt-14">
+      <div className="bg-[#b6bbc1c2] dark:bg-[#44505ec2] w-44 h-16 text-4xl font-semibold flex justify-center items-center rounded-full mt-14">
         {timer}
       </div>
 
@@ -282,8 +210,8 @@ const Recorder = () => {
         <Button Name="save" onClick={save} />
         <Button
           Name="delete"
-          onClick={deleter}
-          xstyles={"bg-gray-200 text-black hover:bg-gray-400"}
+          onClick={stopRecording}
+          xstyles={"bg-gray-800 text-white hover:bg-gray-700"}
         />
       </div>
     </div>
